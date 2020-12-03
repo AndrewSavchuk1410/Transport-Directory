@@ -44,10 +44,10 @@
     <ClInclude Include="graph.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="requests.h">
+    <ClInclude Include="descriptions.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="descriptions.h">
+    <ClInclude Include="router.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
