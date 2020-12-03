@@ -144,6 +144,7 @@
     <ClCompile Include="json.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="TransportDirectory.cpp" />
+    <ClCompile Include="transport_catalog.cpp" />
     <ClCompile Include="transport_router.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="json.h" />
     <ClInclude Include="router.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="transport_catalog.h" />
     <ClInclude Include="transport_router.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
