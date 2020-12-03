@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="graph.h" />
     <ClInclude Include="json.h" />
+    <ClInclude Include="router.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
