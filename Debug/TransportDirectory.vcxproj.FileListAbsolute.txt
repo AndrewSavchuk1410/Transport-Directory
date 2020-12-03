@@ -1,0 +1,2 @@
+D:\GitHub\TransportDirectory\Debug\TransportDirectory.exe
+D:\GitHub\TransportDirectory\Debug\TransportDirectory.pdb
