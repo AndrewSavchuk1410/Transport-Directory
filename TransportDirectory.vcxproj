@@ -140,15 +140,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="descriptions.cpp" />
     <ClCompile Include="json.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="TransportDirectory.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="descriptions.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="json.h" />
-    <ClInclude Include="router.h" />
+    <ClInclude Include="requests.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
