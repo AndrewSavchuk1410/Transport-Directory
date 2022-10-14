@@ -5,71 +5,82 @@
 #include "json.h"
 #include "router.h"
 
+#include "transport_router.pb.h"
+
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 class TransportRouter {
 private:
-    using BusGraph = Graph::DirectedWeightedGraph<double>;
-    using Router = Graph::Router<double>;
+  using BusGraph = Graph::DirectedWeightedGraph<double>;
+  using Router = Graph::Router<double>;
 
 public:
-    TransportRouter(const Descriptions::StopsDict& stops_dict,
-        const Descriptions::BusesDict& buses_dict,
-        const Json::Dict& routing_settings_json);
+  TransportRouter(const Descriptions::StopsDict& stops_dict,
+                  const Descriptions::BusesDict& buses_dict,
+                  const Json::Dict& routing_settings_json);
 
-    struct RouteInfo {
-        double total_time;
+  void Serialize(TCProto::TransportRouter& proto) const;
+  static std::unique_ptr<TransportRouter> Deserialize(const TCProto::TransportRouter& proto);
 
-        struct BusItem {
-            std::string bus_name;
-            double time;
-            size_t span_count;
-        };
-        struct WaitItem {
-            std::string stop_name;
-            double time;
-        };
+  struct RouteInfo {
+    double total_time;
 
-        using Item = std::variant<BusItem, WaitItem>;
-        std::vector<Item> items;
+    struct BusItem {
+      std::string bus_name;
+      double time;
+      size_t start_stop_idx;
+      size_t finish_stop_idx;
+      size_t span_count;
+    };
+    struct WaitItem {
+      std::string stop_name;
+      double time;
     };
 
-    std::optional<RouteInfo> FindRoute(const std::string& stop_from, const std::string& stop_to) const;
+    using Item = std::variant<BusItem, WaitItem>;
+    std::vector<Item> items;
+  };
+
+  std::optional<RouteInfo> FindRoute(const std::string& stop_from, const std::string& stop_to) const;
 
 private:
-    struct RoutingSettings {
-        int bus_wait_time;  // in minutes
-        double bus_velocity;  // km/h
-    };
+  TransportRouter() = default;
 
-    static RoutingSettings MakeRoutingSettings(const Json::Dict& json);
+  struct RoutingSettings {
+    int bus_wait_time;  // in minutes
+    double bus_velocity;  // km/h
+  };
 
-    void FillGraphWithStops(const Descriptions::StopsDict& stops_dict);
+  static RoutingSettings MakeRoutingSettings(const Json::Dict& json);
 
-    void FillGraphWithBuses(const Descriptions::StopsDict& stops_dict,
-        const Descriptions::BusesDict& buses_dict);
+  void FillGraphWithStops(const Descriptions::StopsDict& stops_dict);
 
-    struct StopVertexIds {
-        Graph::VertexId in;
-        Graph::VertexId out;
-    };
-    struct VertexInfo {
-        std::string stop_name;
-    };
+  void FillGraphWithBuses(const Descriptions::StopsDict& stops_dict,
+                          const Descriptions::BusesDict& buses_dict);
 
-    struct BusEdgeInfo {
-        std::string bus_name;
-        size_t span_count;
-    };
-    struct WaitEdgeInfo {};
-    using EdgeInfo = std::variant<BusEdgeInfo, WaitEdgeInfo>;
+  struct StopVertexIds {
+    Graph::VertexId in;
+    Graph::VertexId out;
+  };
+  struct VertexInfo {
+    std::string stop_name;
+  };
 
-    RoutingSettings routing_settings_;
-    BusGraph graph_;
-    std::unique_ptr<Router> router_;
-    std::unordered_map<std::string, StopVertexIds> stops_vertex_ids_;
-    std::vector<VertexInfo> vertices_info_;
-    std::vector<EdgeInfo> edges_info_;
+  struct BusEdgeInfo {
+    std::string bus_name;
+    size_t start_stop_idx;
+    size_t finish_stop_idx;
+  };
+  struct WaitEdgeInfo {};
+  using EdgeInfo = std::variant<BusEdgeInfo, WaitEdgeInfo>;
+
+  RoutingSettings routing_settings_;
+  BusGraph graph_;
+  // TODO: Tell about this unique_ptr usage case
+  std::unique_ptr<Router> router_;
+  std::unordered_map<std::string, StopVertexIds> stops_vertex_ids_;
+  std::vector<VertexInfo> vertices_info_;
+  std::vector<EdgeInfo> edges_info_;
 };
